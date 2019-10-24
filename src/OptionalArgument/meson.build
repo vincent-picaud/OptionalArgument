@@ -1,5 +1,5 @@
-OptionalArgument_headers = ['hello.hpp']
-OptionalArgument_sources = ['hello.cpp']
+OptionalArgument_headers = ['optional_argument.hpp']
+OptionalArgument_sources = []
 
 OptionalArgument_lib = library('OptionalArgument',
 				include_directories : inc,

@@ -1,4 +1,4 @@
-test_array = [['hello_test','hello_exe','hello.cpp']]
+test_array = [['optional_argument_test','optional_argument_exe','optional_argument.cpp']]
 
 foreach test : test_array
   test(test.get(0),

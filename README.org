@@ -1,0 +1,247 @@
+#+TITLE: Optional Argument in C++
+#+PROPERTY: header-args:cpp :wrap example :results output :nomain :flags "-std=c++17 -Wall -I/home/picaud/GitHub/OptionalArgument/src/"
+
+* What is it?
+
+This is a C++17 *one* header file library that will allow you to define named optional arguments.
+
+It can be used to improves code readability by replacing obscure
+function/method calls like
+#+BEGIN_SRC cpp :eval never
+algorithm(x_init, 100, std::vector<double>(n, 0), std::vector<double>(n, 1), 1e-6, 1e-6)
+#+END_SRC
+
+By something like
+
+#+BEGIN_SRC cpp :eval never
+algorithm(x_init, max_iterations = 100, absolute_precision = 1e-6);
+algorithm(x_init, absolute_precision = 1e-6, lower_bounds<double> = std::vector<double>(n, 0));
+algorithm(x_init);
+#+END_SRC
+supporting all the variations in position/definition for the optional arguments.
+
+The required boilerplate code to add optional
+argument support is relatively light:
+
+#+BEGIN_SRC cpp :eval never
+template <typename T, typename... USER_OPTIONS>
+void algorithm(std::vector<T>& x, const USER_OPTIONS&... user_options)
+{
+  Absolute_Precision absolute_precision = 1e-10;
+  Max_Iterations max_iterations = 500;
+  std::optional<Allows_Restart> allows_restart;
+
+  auto options = make_optional_argument(absolute_precision, max_iterations, allows_restart);
+  optional_argument(options, user_options...);
+
+  // ...
+}
+#+END_SRC
+
+Basically it works by defining a =std::tuple<OPTIONS...>= which is
+filled by the provided =user_options= at the site call.
+
+** Install 
+
+The library currently uses the [[https://mesonbuild.com/][meson]] build system. Maybe I will add CMake
+in the future, but as this library is only one header file you can
+easily test it without any build system.
+
+* Tutorial
+
+** Basic usage 
+
+The most "rustic" usage is:
+
+#+begin_src cpp :eval no-export :exports both
+#include <iostream>
+#include "OptionalArgument/optional_argument.hpp"
+
+using namespace OptionalArgument;
+
+template <typename... Ts>
+void example(Ts... user_options)
+{
+  int maximum_iterations = 50;
+  double absolute_precision = 1e-5;
+  std::optional<bool> allows_restart;
+
+  auto options = take_optional_argument_ref(maximum_iterations, absolute_precision, allows_restart);
+  optional_argument(options, user_options...);
+
+  std::cout << "\nOption values: " << options;
+}
+
+int main()
+{
+  example(10);
+  example(1e-6, std::optional<bool>(true));
+  example();
+
+  return EXIT_SUCCESS;
+}
+#+end_src
+
+#+RESULTS:
+#+BEGIN_example
+Option values: 10 1e-05 
+Option values: 50 1e-06 1 
+Option values: 50 1e-05
+#+END_example
+
+Basically we define some optional arguments like
+=absolute_precision=. Using a helper function
+=take_optional_argument_ref()= we collect their references and store
+them in the =options= object. Then optional argument values are
+overwritten by =user_options= provided at the call site. This task is
+performed by the =optional_argument()= function.
+
+** =Named_Type=
+
+Preamble: great blog posts about =Named_Typed= can be found [[https://www.fluentcpp.com/2016/12/08/strong-types-for-strong-interfaces/][here]]. This was a
+source of inspiration but our implementation is different and only
+provides functionalities useful for our =OptionalArgument= library.
+
+There are several limitations if we stick to literal types
+like =int, double, ...= :
+- we can not define several options of the same type,
+- we can not relies on implicit type conversion.
+
+By example, if you try:
+
+#+begin_src cpp :eval never :exports both
+#include "OptionalArgument/optional_argument.hpp"
+#include <iostream>
+
+using namespace OptionalArgument;
+
+template <typename... Ts>
+void example(Ts... user_options)
+{
+  size_t maximum_iterations = 50;
+  float absolute_precision = 1e-5;
+
+  auto options = take_optional_argument_ref(maximum_iterations, absolute_precision);
+  optional_argument(options, user_options...);
+
+  std::cout << "\nOption values: " << options;
+}
+
+int main()
+{
+  example(10);    // does not work, one would have to use: example(size_t(10));
+  example(1e-6);  // does not work, one would have to use: example(1e-6f);
+
+  return EXIT_SUCCESS;
+}
+#+end_src
+
+the library does not compile and returns you an error message:
+
+#+begin_example
+...
+OptionalArgument/optional_argument.hpp:122:46: error: static assertion failed: Unexpected type
+  122 |         static_assert((occurence_count != 0) && (occurence_count_maybe_optional != 0), "Unexpected type");
+...
+#+end_example
+
+The solution is to use implicit type conversion and a different type
+for each option.
+
+This library provides a basic =Named_Type= class for
+that. Please, note that you can use this library with any of your own class, it is by no
+way mandatory to use the provided =Named_Type=. 
+
+Using =Named_Type= the problematic initial code
+
+#+begin_src cpp :eval never :exports both
+#include "OptionalArgument/optional_argument.hpp"
+#include <iostream>
+
+using namespace OptionalArgument;
+
+template <typename... Ts>
+void example(Ts... user_options)
+{
+  size_t maximum_iterations = 50;
+  float absolute_precision = 1e-5;
+
+  auto options = take_optional_argument_ref(maximum_iterations, absolute_precision);
+  optional_argument(options, user_options...);
+
+  std::cout << "\nOption values: " << options;
+}
+
+int main()
+{
+  example(10);    // does not work, would have to use: example(size_t(10));
+  example(1e-6);  // does not work, would have to use: example(1e-6f);
+
+  return EXIT_SUCCESS;
+}
+#+end_src
+
+is fixed/rewritten as follows:
+
+#+begin_src cpp :eval no-export :exports both
+#include "OptionalArgument/optional_argument.hpp"
+
+#include <iostream>
+
+using namespace OptionalArgument;
+
+using Absolute_Precision = Named_Type<struct Absolute_Precision_Tag, double>;
+constexpr auto absolute_precision = typename Absolute_Precision::argument_syntactic_sugar();
+
+using Maximum_Iterations = Named_Type<struct Maximum_Iterations_Tag, size_t>;
+constexpr auto maximum_iterations = typename Maximum_Iterations::argument_syntactic_sugar();
+
+template <typename... Ts>
+void example(Ts... user_options)
+{
+  Maximum_Iterations maximum_iterations = 50;
+  Absolute_Precision absolute_precision = 1e-5;
+
+  auto options = take_optional_argument_ref(maximum_iterations, absolute_precision);
+  optional_argument(options, user_options...);
+
+  std::cout << "\nOption values: " << options;
+}
+
+int main()
+{
+  example(maximum_iterations = 10);
+  example(absolute_precision = 1e-6);
+
+  return EXIT_SUCCESS;
+}
+#+end_src
+
+#+RESULTS:
+#+BEGIN_example
+Option values: 10 1e-05 
+Option values: 50 1e-06
+#+END_example
+
+* More examples
+
+In the =examples/= directory you will find:
+
+- =flag_example.cpp= shows how to use =Named_Type= specializations that
+  does not contain a value. These objects can be use to get on/off
+  optional flags.
+
+- =struct_example.cpp= shows that you can use this library with any of
+  your class instead of using the =Named_Type= one.
+
+- =algorithm_usage_example.cpp= is an hypothetical optimization
+  algorithm with several options, with some using the std::vector
+  class.
+
+- =plot_usage_example.cpp= is another usage example that shows how one
+  can easily generate gnuplot script commands with all their variations.
+
+* FAQ
+
+-> your questions here :-)
+
