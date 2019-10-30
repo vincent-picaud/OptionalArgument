@@ -1,3 +1,5 @@
+// This example shows how to use Named_Type<TAG,void> as on/off flag.
+//
 #include "OptionalArgument/optional_argument.hpp"
 
 using namespace OptionalArgument;
