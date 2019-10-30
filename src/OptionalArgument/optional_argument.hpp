@@ -15,7 +15,8 @@ namespace OptionalArgument
   //////////////// Count_Type_Occurrence ////////////////
   //
   template <typename T, typename... Ts>
-  struct Count_Type_Occurence : public std::integral_constant<size_t, (std::is_same_v<T, Ts> + ... + 0)>
+  struct Count_Type_Occurence
+      : public std::integral_constant<size_t, (std::is_same_v<T, Ts> + ... + 0)>
   {
   };
   template <typename T, typename... Ts>
@@ -136,7 +137,7 @@ namespace OptionalArgument
       constexpr size_t occurence_count_maybe_optional =
           Count_Type_Occurence<std::optional<USER_OPTION>,
                                std::remove_reference_t<OPTIONs>...>::value;
-      [[maybe_unused]] constexpr size_t occurence_count_maybe_optional_by_value =
+      constexpr size_t occurence_count_maybe_optional_by_value =
           Count_Type_Occurence<std::optional<USER_OPTION>, OPTIONs...>::value;
 
       static_assert(((occurence_count <= 1) && (occurence_count_maybe_optional <= 1)),
