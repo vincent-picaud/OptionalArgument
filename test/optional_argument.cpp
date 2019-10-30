@@ -9,10 +9,13 @@ using namespace OptionalArgument;
 
 TEST(Optional_Argument, meta)
 {
-  ASSERT_EQ((Count_Type_Occurence_v<int>),0);
-  ASSERT_EQ((Count_Type_Occurence_v<int,double,int>),1);
-  ASSERT_EQ((Count_Type_Occurence_v<int,int,double,int>),2);
+  ASSERT_EQ((Count_Type_Occurence_v<int>), 0);
+  ASSERT_EQ((Count_Type_Occurence_v<int, double, int>), 1);
+  ASSERT_EQ((Count_Type_Occurence_v<int, int, double, int>), 2);
 
+  ASSERT_EQ((Is_Free_Of_Duplicate_Type_v<>), true);
+  ASSERT_EQ((Is_Free_Of_Duplicate_Type_v<int, double, float>), true);
+  ASSERT_EQ((Is_Free_Of_Duplicate_Type_v<int, float, double, float>), false);
 }
 
 TEST(Optional_Argument, basic)
