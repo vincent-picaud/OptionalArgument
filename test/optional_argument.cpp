@@ -16,6 +16,12 @@ TEST(Optional_Argument, meta)
   ASSERT_EQ((Is_Free_Of_Duplicate_Type_v<>), true);
   ASSERT_EQ((Is_Free_Of_Duplicate_Type_v<int, double, float>), true);
   ASSERT_EQ((Is_Free_Of_Duplicate_Type_v<int, float, double, float>), false);
+
+  ASSERT_TRUE((std::is_same_v<Option_Decay_t<std::optional<double>>, double>));
+  ASSERT_TRUE((std::is_same_v<Option_Decay_t<std::optional<double>&>, double>));
+  ASSERT_TRUE((std::is_same_v<Option_Decay_t<std::optional<double&>&>, double&>));
+  ASSERT_TRUE((std::is_same_v<Option_Decay_t<double&>, double>));
+  ASSERT_TRUE((std::is_same_v<Option_Decay_t<double>, double>));
 }
 
 TEST(Optional_Argument, basic)
