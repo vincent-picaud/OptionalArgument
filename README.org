@@ -31,7 +31,7 @@ void algorithm(std::vector<T>& x, const USER_OPTIONS&... user_options)
   Max_Iterations max_iterations = 500;
   std::optional<Allows_Restart> allows_restart;
 
-  auto options = make_optional_argument(absolute_precision, max_iterations, allows_restart);
+  auto options = take_optional_argument_ref(absolute_precision, max_iterations, allows_restart);
   optional_argument(options, user_options...);
 
   // ...
@@ -41,7 +41,7 @@ void algorithm(std::vector<T>& x, const USER_OPTIONS&... user_options)
 Basically it works by defining a =std::tuple<OPTIONS...>= which is
 filled by the provided =user_options= at the site call.
 
-** Install 
+** Installation 
 
 The library currently uses the [[https://mesonbuild.com/][meson]] build system. Maybe I will add CMake
 in the future, but as this library is only one header file you can
