@@ -86,14 +86,44 @@ namespace OptionalArgument
     return {options...};
   }
 
+  //////////////// Option_Decay_t<T> ////////////////
+  //
+  // T                 -> T
+  // T&                -> T
+  // std::optional<T>  -> T
+  // std::optional<T>& -> T
+  //
+  template <typename T>
+  struct Option_Decay
+  {
+    using type = T;
+  };
+  template <typename T>
+  struct Option_Decay<T&>
+  {
+    using type = T;
+  };
+  template <typename T>
+  struct Option_Decay<std::optional<T>>
+  {
+    using type = T;
+  };
+  template <typename T>
+  struct Option_Decay<std::optional<T>&>
+  {
+    using type = T;
+  };
+  template <typename T>
+  using Option_Decay_t = typename Option_Decay<T>::type;
+
   //////////////// optional_argument() ////////////////
   //
   template <typename... OPTIONs, typename... USER_OPTIONs>
   void
   optional_argument(Optional_Argument<OPTIONs...>& options, USER_OPTIONs&&... user_options) noexcept
   {
-    static_assert(Is_Free_Of_Duplicate_Type_v<USER_OPTIONs...>);
-    static_assert(Is_Free_Of_Duplicate_Type_v<OPTIONs...>);
+    static_assert(Is_Free_Of_Duplicate_Type_v<Option_Decay_t<USER_OPTIONs>...>);
+    static_assert(Is_Free_Of_Duplicate_Type_v<Option_Decay_t<OPTIONs>...>);
 
     // USER_OPTION might be  empty
     [[maybe_unused]] auto dispatch = [&](auto&& user_option) {
