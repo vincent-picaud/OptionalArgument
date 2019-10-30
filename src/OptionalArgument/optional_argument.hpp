@@ -142,6 +142,8 @@ namespace OptionalArgument
 
       static_assert(((occurence_count <= 1) && (occurence_count_maybe_optional <= 1)),
                     "Internal error, as incompatible with Is_Free_Of_Duplicate_Type");
+      static_assert((occurence_count == 1) || (occurence_count_maybe_optional == 1),
+                    "Unexpected type");
 
       if constexpr (occurence_count == 1)
       {
@@ -150,18 +152,13 @@ namespace OptionalArgument
         std::get<std::conditional_t<occurence_count_by_value, USER_OPTION, USER_OPTION&>>(options) =
             std::forward<decltype(user_option)>(user_option);
       }
-      else if constexpr (occurence_count_maybe_optional == 1)
+      else
       {
         // ...ditto...
         //
         std::get<std::conditional_t<occurence_count_maybe_optional_by_value,
                                     std::optional<USER_OPTION>, std::optional<USER_OPTION>&>>(
             options) = std::forward<decltype(user_option)>(user_option);
-      }
-      else
-      {
-        static_assert((occurence_count != 0) && (occurence_count_maybe_optional != 0),
-                      "Unexpected type");
       }
     };
 
