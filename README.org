@@ -167,36 +167,8 @@ This library provides a basic =Named_Type= class for
 that. Please, note that you can use this library with any of your own class, it is by no
 way mandatory to use the provided =Named_Type=. 
 
-Using =Named_Type= the problematic initial code
-
-#+begin_src cpp :eval never :exports both
-#include "OptionalArgument/optional_argument.hpp"
-#include <iostream>
-
-using namespace OptionalArgument;
-
-template <typename... Ts>
-void example(Ts... user_options)
-{
-  size_t maximum_iterations = 50;
-  float absolute_precision = 1e-5;
-
-  auto options = take_optional_argument_ref(maximum_iterations, absolute_precision);
-  optional_argument(options, user_options...);
-
-  std::cout << "\nOption values: " << options;
-}
-
-int main()
-{
-  example(10);    // does not work, would have to use: example(size_t(10));
-  example(1e-6);  // does not work, would have to use: example(1e-6f);
-
-  return EXIT_SUCCESS;
-}
-#+end_src
-
-is fixed/rewritten as follows:
+Using =Named_Type= the problematic initial code is fixed/rewritten as
+follows:
 
 #+begin_src cpp :eval no-export :exports both
 #include "OptionalArgument/optional_argument.hpp"
