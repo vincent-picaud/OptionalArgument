@@ -240,9 +240,42 @@ In the =examples/= directory you will find:
 - =algorithm_usage_example.cpp= is an hypothetical optimization
   algorithm with several options, with some using the std::vector
   class.
+#+BEGIN_SRC cpp :eval never
+int
+main()
+{
+  const size_t n = 4;
+  std::vector<double> x_init(n);
+
+  // Option values: 100 1e-10 1e-10
+  optimization_algorithm(x_init);
+
+  // Option values: 50 1e-10 1e-10 0 0 0 0
+  optimization_algorithm(x_init, max_iterations = 50,
+                         lower_bounds<double> = std::vector<double>(n, 0));
+
+  // Option values: 50 1e-08 1e-10 0 0 0 0  1 1 1 1
+  optimization_algorithm(x_init, max_iterations = 50, absolute_precision = 1e-8,
+                         lower_bounds<double> = std::vector<double>(n, 0),
+                         upper_bounds<double> = std::vector<double>(n, 1));
+}
+#+END_SRC
 
 - =plot_usage_example.cpp= is another usage example that shows how one
   can easily generate gnuplot script commands with all their variations.
+
+#+BEGIN_SRC cpp :eval never
+int
+main()
+{
+  // prints:
+  // plot sin(x)  linetype 2 title "my curve 1"
+  // replot cos(x) linewidth 4 title "my curve 2"
+  //
+  plot(std::cout, "sin(x)", line_type = 2, curve_title = "my curve 1");
+  replot(std::cout, "cos(x)", line_width = 4, curve_title = "my curve 2");
+}
+#+END_SRC
 
 * FAQ
 
