@@ -15,7 +15,7 @@ namespace OptionalArgument
   //////////////// Count_Type_Occurrence ////////////////
   //
   template <typename T, typename... Ts>
-  struct Count_Type_Occurence : public std::integral_constant<size_t, (std::is_same_v<T, Ts> + ...)>
+  struct Count_Type_Occurence : public std::integral_constant<size_t, (std::is_same_v<T, Ts> + ... + 0)>
   {
   };
   template <typename T, typename... Ts>

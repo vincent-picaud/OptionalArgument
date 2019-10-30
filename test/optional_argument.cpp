@@ -7,6 +7,14 @@
 
 using namespace OptionalArgument;
 
+TEST(Optional_Argument, meta)
+{
+  ASSERT_EQ((Count_Type_Occurence_v<int>),0);
+  ASSERT_EQ((Count_Type_Occurence_v<int,double,int>),1);
+  ASSERT_EQ((Count_Type_Occurence_v<int,int,double,int>),2);
+
+}
+
 TEST(Optional_Argument, basic)
 {
   double x{};
