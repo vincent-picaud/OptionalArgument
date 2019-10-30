@@ -107,8 +107,8 @@ library.
 
 There are several limitations if we stick to literal types
 like =int, double, ...= :
-- we can not define several options of the same type,
-- we can not relies on implicit type conversion.
+- we cannot define several options of the same type,
+- we cannot relies on implicit type conversion.
 
 By example, if you try:
 
