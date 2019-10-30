@@ -113,8 +113,8 @@ performed by the =optional_argument()= function.
 #+BEGIN_QUOTE
 Preamble: great blog posts about =Named_Typed= can be found [[https://www.fluentcpp.com/2016/12/08/strong-types-for-strong-interfaces/][here]]. This
 was a source of inspiration but our implementation is different and
-simpler as it provides functionalities useful for our =OptionalArgument=
-library.
+simpler as it only provides functionalities useful for our
+=OptionalArgument= library.
 #+END_QUOTE
 
 There are several limitations if we stick to literal types
