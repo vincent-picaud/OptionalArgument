@@ -1,7 +1,6 @@
 // MIT License
-//
 // Copyright (c) 2019 Picaud Vincent, picaud.vincent at gmail dot com
-//
+// https://github.com/vincent-picaud/OptionalArgument
 //
 #pragma once
 
