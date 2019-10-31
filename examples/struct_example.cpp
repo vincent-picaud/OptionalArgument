@@ -3,59 +3,66 @@
 //
 #include "OptionalArgument/optional_argument.hpp"
 
-#include <iomanip>
+#include <iostream>
+#include <random>
 
 using namespace OptionalArgument;
 
-struct A
+struct Sample_Size
 {
-  int n;
+  size_t n;
+
+  size_t
+  value() const
+  {
+    return n;
+  }
 };
-struct B
+
+struct Truncated
 {
 };
+
+static constexpr auto sample_size = Argument_Syntactic_Sugar<Sample_Size, size_t>();
+static constexpr auto truncated   = Truncated();
 
 template <typename... USER_OPTIONS>
 void
-foo(USER_OPTIONS&&... user_options)
+generate_sample(USER_OPTIONS&&... user_options)
 {
-  A a{10};
-  std::optional<B> b;
+  //// Options ////
+  //
+  Sample_Size sample_size{10};
+  std::optional<Truncated> truncated;
 
-  auto options = take_optional_argument_ref(a, b);
+  auto options = take_optional_argument_ref(sample_size, truncated);
   optional_argument(options, std::forward<USER_OPTIONS>(user_options)...);
 
-  std::cout << "Options (1): A.n = " << std::setw(2) << a.n << " B = " << std::boolalpha
-            << b.has_value() << std::endl;
-  // another way is:
-  std::cout << "Options (2): A.n = " << std::setw(2) << std::get<A&>(options).n
-            << " B = " << std::boolalpha << std::get<std::optional<B>&>(options).has_value()
-            << std::endl;
+  //// Implementation ////
+  //
+  std::random_device rd{};
+  std::mt19937 gen{rd()};
+
+  std::normal_distribution<> d{0, 1};
+
+  for (size_t i = 0; i < sample_size.value(); i++)
+  {
+    auto sample = d(gen);
+    if (truncated.has_value())
+    {
+      sample = std::abs(sample);
+    }
+    std::cout << sample << std::endl;
+  }
+  std::cout << std::endl;
 }
 
-// Another way, using optional argument by value:
-//
-template <typename... USER_OPTIONS>
-void
-foo_by_value(USER_OPTIONS&&... user_options)
-{
-  auto options = Optional_Argument<A, std::optional<B>>{A{10}, std::optional<B>{}};
-  optional_argument(options, std::forward<USER_OPTIONS>(user_options)...);
-
-  std::cout << "Options: A.n = " << std::setw(2) << std::get<A>(options).n
-            << " B = " << std::boolalpha << std::get<std::optional<B>>(options).has_value()
-            << std::endl;
-}
 int
 main()
 {
-  foo();
-  foo(A{5});
-  foo(A{15}, B());
+  generate_sample();
 
-  std::cout << std::endl;
+  generate_sample(truncated);
 
-  foo_by_value();
-  foo_by_value(A{5});
-  foo_by_value(A{15}, B());
+  generate_sample(truncated, sample_size = 5);
 }
