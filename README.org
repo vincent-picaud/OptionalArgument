@@ -155,7 +155,7 @@ the library does not compile and returns you an error message:
 #+begin_example
 ...
 OptionalArgument/optional_argument.hpp:122:46: error: static assertion failed: Unexpected type
-  122 |         static_assert((occurence_count != 0) && (occurence_count_maybe_optional != 0), "Unexpected type");
+static_assert((occurence_count != 0) && (occurence_count_maybe_optional != 0), "Unexpected type");
 ...
 #+end_example
 
@@ -217,7 +217,7 @@ You can use this library without any reference to the =Named_Type= class (which 
 The example below shows how you can define optional arguments from
   scratch and use them.
 
-#+BEGIN_SRC cpp :eval never
+#+BEGIN_SRC cpp :eval no-export :exports both
 #include "OptionalArgument/optional_argument.hpp"
 
 #include <iostream>
@@ -279,11 +279,37 @@ main()
 {
   generate_sample();
 
-  generate_sample(truncated);
+  generate_sample(sample_size = 5);
 
   generate_sample(truncated, sample_size = 5);
 }
 #+END_SRC
+
+#+RESULTS:
+#+BEGIN_example
+-0.416368
+-1.50344
+2.58518
+-0.144277
+-0.251208
+2.42255
+-0.0763728
+-0.536604
+-0.263128
+0.702065
+
+-1.26893
+0.398224
+0.640818
+1.14303
+-1.19008
+
+0.595222
+0.515426
+2.18843
+1.18475
+1.61471
+#+END_example
 
 * More examples
 
