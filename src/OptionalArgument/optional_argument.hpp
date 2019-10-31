@@ -154,6 +154,8 @@ namespace OptionalArgument
       }
       else
       {
+        static_assert(occurence_count_maybe_optional == 1);
+
         // ...ditto...
         //
         std::get<std::conditional_t<occurence_count_maybe_optional_by_value,
@@ -167,6 +169,31 @@ namespace OptionalArgument
 
   //////////////// Named_Type ////////////////
   //
+  // inspired by
+  // https://github.com/joboccara/NamedType/blob/master/named_type_impl.hpp
+  //
+  template <typename OBJ, typename VALUE>
+  struct Argument_Syntactic_Sugar
+  {
+    constexpr OBJ
+    operator=(const VALUE& value) const
+    {
+      return {value};
+    }
+
+    constexpr OBJ
+    operator=(VALUE&& value) const
+    {
+      return {std::move(value)};
+    }
+
+    constexpr Argument_Syntactic_Sugar()                      = default;
+    Argument_Syntactic_Sugar(Argument_Syntactic_Sugar const&) = delete;
+    Argument_Syntactic_Sugar(Argument_Syntactic_Sugar&&)      = delete;
+    Argument_Syntactic_Sugar& operator=(Argument_Syntactic_Sugar const&) = delete;
+    Argument_Syntactic_Sugar& operator=(Argument_Syntactic_Sugar&&) = delete;
+  };
+
   template <typename TAG, typename T = void>
   class Named_Type
   {
@@ -201,28 +228,7 @@ namespace OptionalArgument
       return _value;
     }
 
-    // inspired by
-    // https://github.com/joboccara/NamedType/blob/master/named_type_impl.hpp
-    struct argument_syntactic_sugar
-    {
-      constexpr Named_Type
-      operator=(const T& value) const
-      {
-        return Named_Type{value};
-      }
-
-      constexpr Named_Type
-      operator=(T&& value) const
-      {
-        return Named_Type{std::move(value)};
-      }
-
-      constexpr argument_syntactic_sugar()                      = default;
-      argument_syntactic_sugar(argument_syntactic_sugar const&) = delete;
-      argument_syntactic_sugar(argument_syntactic_sugar&&)      = delete;
-      argument_syntactic_sugar& operator=(argument_syntactic_sugar const&) = delete;
-      argument_syntactic_sugar& operator=(argument_syntactic_sugar&&) = delete;
-    };
+    using argument_syntactic_sugar = Argument_Syntactic_Sugar<Named_Type<TAG, T>, T>;
   };
 
   template <typename TAG, typename T>
