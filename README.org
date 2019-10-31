@@ -132,8 +132,8 @@ using namespace OptionalArgument;
 template <typename... Ts>
 void example(Ts... user_options)
 {
-  size_t maximum_iterations = 50;
-  float absolute_precision = 1e-5;
+  size_t maximum_iterations = 50;   // <- size_t instead of int
+  float absolute_precision = 1e-5;  // <- float instead of double
 
   auto options = take_optional_argument_ref(maximum_iterations, absolute_precision);
   optional_argument(options, user_options...);
