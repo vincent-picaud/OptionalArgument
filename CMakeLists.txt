@@ -1,7 +1,6 @@
 # A little bit rusty with CMake, here is a solution inspired by
 # http://dominikberner.ch/cmake-interface-lib/  https://github.com/bernedom/SI 
-# Only for convenience, my default build use Meson
-# vp
+# Only for convenience, Meson remains my default build system :)
 #
 cmake_minimum_required(VERSION 3.12)
 
@@ -29,10 +28,6 @@ target_include_directories(
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>)
 
 target_compile_features(${PROJECT_NAME} INTERFACE cxx_std_17)
-
-if(BUILD_TESTING)
-  add_subdirectory(test)
-endif()
 
 # locations are provided by GNUInstallDirs
 install(TARGETS ${PROJECT_NAME}
@@ -75,3 +70,9 @@ include(CPack)
 # examples/
 #
 add_subdirectory(examples/)
+
+# test/
+# TODO 
+# if(BUILD_TESTING)
+#   add_subdirectory(test)
+# endif()
