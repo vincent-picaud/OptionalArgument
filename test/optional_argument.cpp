@@ -133,6 +133,10 @@ foo_vector(const std::vector<T>&, OPTIONS&&... options)
   auto opt_arg = take_optional_argument_ref(v);
   optional_argument(opt_arg, std::forward<OPTIONS>(options)...);
 
+  if (v.value().size())
+  {
+    v.value()[0] = 2;
+  }
   return v.value();
 }
 
@@ -158,9 +162,13 @@ TEST(Optional_Argument, foo_vector)
 
   std::vector<int> v_2 = foo_vector(x, starting_point_vector<int> = y);
   ASSERT_EQ(v_2.size(), 3);
-  ASSERT_EQ(v_2[2], 1);
+  ASSERT_EQ(v_2[0], 2);
+  ASSERT_EQ(v_2[1], 1);
+  // Checks that y is copied
   ASSERT_EQ(y.size(), 3);
+  ASSERT_EQ(y[0], 1);
 
+  // Checks that y is moved
   std::vector<int> v_3 = foo_vector(x, starting_point_vector<int> = std::move(y));
   ASSERT_EQ(v_3.size(), 3);
   ASSERT_EQ(v_3[2], 1);
