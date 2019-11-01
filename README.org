@@ -59,6 +59,12 @@ ninja test
 
 Examples can then be found in the =examples/= directory.
 
+*** CMake
+
+*Updated:* Fri 01 Nov 2019 08:53:46 AM CET
+
+For convenience, I just have included a CMake build solution that should work. 
+
 * Tutorial
 ** Basic usage 
 
