@@ -4,12 +4,13 @@
 // - maximum_iterations
 // - lower_bounds, upper_bounds
 //
-#include <vector>
+
 #include "OptionalArgument/optional_argument.hpp"
 
 #include <iomanip>
 #include <iostream>
 #include <optional>
+#include <vector>
 
 namespace OptionalArgument
 {
@@ -68,18 +69,15 @@ main()
   const size_t n = 4;
   std::vector<double> x_init(n);
 
-  // Option values: 100 1e-10 1e-10 
+  // Option values: 100 1e-10 1e-10
   optimization_algorithm(x_init);
 
-  // Option values: 50 1e-10 1e-10 0 0 0 0  
+  // Option values: 50 1e-10 1e-10 0 0 0 0
   optimization_algorithm(x_init, max_iterations = 50,
                          lower_bounds<double> = std::vector<double>(n, 0));
 
-  // Option values: 50 1e-08 1e-10 0 0 0 0  1 1 1 1 
-   optimization_algorithm(x_init,
-			  max_iterations = 50,
-			  absolute_precision = 1e-8,
-			  lower_bounds<double> = std::vector<double>(n, 0),
-			  upper_bounds<double> = std::vector<double>(n, 1)
-			  );
+  // Option values: 50 1e-08 1e-10 0 0 0 0  1 1 1 1
+  optimization_algorithm(x_init, max_iterations = 50, absolute_precision = 1e-8,
+                         lower_bounds<double> = std::vector<double>(n, 0),
+                         upper_bounds<double> = std::vector<double>(n, 1));
 }

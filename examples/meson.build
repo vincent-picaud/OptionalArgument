@@ -13,3 +13,7 @@ executable('flag_example',
 executable('struct_example',
 	   'struct_example.cpp',
 	   dependencies : [OptionalArgument_dep])
+
+executable('check_copy_move',
+	   'check_copy_move.cpp',
+	   dependencies : [OptionalArgument_dep])
