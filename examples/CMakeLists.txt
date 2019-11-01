@@ -1,0 +1,9 @@
+add_executable(struct_example struct_example.cpp)
+target_link_libraries(struct_example OptionalArgument::OptionalArgument)
+
+add_executable(algorithm_usage_example algorithm_usage_example.cpp)
+target_link_libraries(algorithm_usage_example OptionalArgument::OptionalArgument)
+
+add_executable(plot_usage_example plot_usage_example.cpp)
+target_link_libraries(plot_usage_example OptionalArgument::OptionalArgument)
+
