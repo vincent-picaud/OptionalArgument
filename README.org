@@ -122,8 +122,8 @@ simpler as it only provides functionalities useful for our
 =OptionalArgument= library.
 #+END_QUOTE
 
-There are several limitations if we stick to literal types
-like =int, double, ...= :
+There are several limitations if we only stick to types
+like =int, double, std::string ...= :
 - we cannot define several options of the same type,
 - we cannot relies on implicit type conversion.
 
@@ -156,12 +156,12 @@ int main()
 }
 #+end_src
 
-the library does not compile and returns you an error message:
+the library does not compile and returns an error message:
 
 #+begin_example
 ...
 OptionalArgument/optional_argument.hpp:122:46: error: static assertion failed: Unexpected type
-static_assert((occurence_count != 0) && (occurence_count_maybe_optional != 0), "Unexpected type");
+static_assert((occurence_count == 1) || (occurence_count_maybe_optional == 1), "Unexpected type");
 ...
 #+end_example
 
