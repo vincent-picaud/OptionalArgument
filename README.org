@@ -3,7 +3,7 @@
 
 * News
 ** Thu 21 Nov 2019 
-Added =Named_Assert_Type= type. See example section.
+Added =Named_Assert_Type= type. See =named_assert_example.cpp= section.
 ** Fri 01 Nov 2019
 Added CMake constructor 
 
@@ -325,11 +325,13 @@ main()
 
 * More examples
 
-In the =examples/= directory you will find:
+You will find associated code in the  =examples/= directory.
 
-- =algorithm_usage_example.cpp= is an hypothetical optimization
-  algorithm with several options, with some using the std::vector
-  class.
+** =algorithm_usage_example.cpp= 
+
+An hypothetical optimization algorithm with several options, with some
+  using the =std::vector= class.
+
 #+BEGIN_SRC cpp :eval never
 int
 main()
@@ -351,8 +353,10 @@ main()
 }
 #+END_SRC
 
-- =plot_usage_example.cpp= is another usage example that shows how one
-  can easily generate gnuplot script commands with all their variations.
+** =plot_usage_example.cpp= 
+
+Another use case that shows how one can easily generate gnuplot script
+  commands with all their variations.
 
 #+BEGIN_SRC cpp :eval never
 int
@@ -367,10 +371,10 @@ main()
 }
 #+END_SRC
 
-** New examples (Thu 21 Nov 2019)
+** =named_assert_example.cpp=
 
-The =Named_Assert_Type= type has been added it allows to control
-parameters. A usage example is as follows:
+The =Named_Assert_Type= type allows to control parameter value. A usage
+example is as follows:
 
 #+BEGIN_SRC cpp :eval never
 #include "OptionalArgument/optional_argument.hpp"
@@ -406,7 +410,6 @@ main()
 }
 #+END_SRC
 
-** New examples 
 * FAQ
 
 -> your questions here :-)
