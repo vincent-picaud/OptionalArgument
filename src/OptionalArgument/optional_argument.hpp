@@ -347,10 +347,8 @@ namespace OptionalArgument
    public:
     Named_Std_Function() = default;
 
-    template <typename _F>
-    Named_Std_Function(_F&& f) : _f(std::forward<_F>(f))
-    {
-    }
+    Named_Std_Function(value_type&& f) : _f(std::move(f)) {}
+    Named_Std_Function(const value_type& f) : _f(f) {}
 
     bool
     is_empty() const
