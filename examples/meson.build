@@ -17,3 +17,7 @@ executable('struct_example',
 executable('check_copy_move',
 	   'check_copy_move.cpp',
 	   dependencies : [OptionalArgument_dep])
+
+executable('named_assert_example',
+	   'named_assert_example.cpp',
+	   dependencies : [OptionalArgument_dep])

@@ -1,6 +1,12 @@
 #+TITLE: Optional Argument in C++
 #+PROPERTY: header-args:cpp :wrap example :results output :nomain :flags "-std=c++17 -Wall -I/home/picaud/GitHub/OptionalArgument/src/"
 
+* News
+** Thu 21 Nov 2019 
+Added =Named_Assert_Type= type. See example section.
+** Fri 01 Nov 2019
+Added CMake constructor 
+
 * What is it?
 
 This is a C++17 *one* header file library that will allow you to define named optional arguments.
@@ -361,7 +367,48 @@ main()
 }
 #+END_SRC
 
+** New examples (Thu 21 Nov 2019)
+
+The =Named_Assert_Type= type has been added it allows to control
+parameters. A usage example is as follows:
+
+#+BEGIN_SRC cpp :eval never
+#include "OptionalArgument/optional_argument.hpp"
+
+#include <cassert>
+
+using namespace OptionalArgument;
+
+template <typename T>
+struct Assert_Positive
+{
+  void
+  operator()(const T& t) const
+  {
+    assert(t > 0);
+  }
+};
+
+using Absolute_Precision =
+    Named_Assert_Type<struct Absolute_Precision_Tag, Assert_Positive<double>, double>;
+constexpr auto absolute_precision = typename Absolute_Precision::argument_syntactic_sugar();
+
+void
+my_algorithm(const Absolute_Precision& absolute_precision)
+{
+}
+
+int
+main()
+{
+  my_algorithm(absolute_precision = +1e-6);
+  my_algorithm(absolute_precision = -1e-6);  // run-time assert fails
+}
+#+END_SRC
+
+** New examples 
 * FAQ
 
 -> your questions here :-)
+
 

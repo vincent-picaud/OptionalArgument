@@ -252,4 +252,59 @@ namespace OptionalArgument
     out << "On";
     return out;
   }
+
+  ///////////////////////////////////////////////////
+  // Extra, added: Thu 21 Nov 2019 12:34:03 PM CET //
+  ///////////////////////////////////////////////////
+  //
+
+  // Named type with precondition
+  // see: example/
+  //
+  template <typename TAG, typename ASSERT, typename T = void>
+  class Named_Assert_Type
+  {
+    // allowing reference brings some complications we do not really
+    // need here.
+    static_assert(not std::is_reference_v<T>);
+
+   public:
+    using value_type = T;
+
+   protected:
+    value_type _value;
+
+   public:
+    constexpr Named_Assert_Type() = default;
+
+    template <typename _T>
+    constexpr Named_Assert_Type(_T&& value) : _value(std::forward<_T>(value))
+    {
+      ASSERT()(_value);
+    }
+
+    constexpr const value_type&
+    value() const
+    {
+      return _value;
+    }
+
+    constexpr value_type&
+    value()
+    {
+      return _value;
+    }
+
+    using argument_syntactic_sugar = Argument_Syntactic_Sugar<Named_Assert_Type>;
+  };
+
+  template <typename TAG, typename T>
+  std::ostream&
+  operator<<(std::ostream& out, const Named_Assert_Type<TAG, T>& to_print)
+  {
+    out << to_print.value();
+
+    return out;
+  }
+
 }  // namespace OptionalArgument

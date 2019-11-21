@@ -7,3 +7,8 @@ target_link_libraries(algorithm_usage_example OptionalArgument::OptionalArgument
 add_executable(plot_usage_example plot_usage_example.cpp)
 target_link_libraries(plot_usage_example OptionalArgument::OptionalArgument)
 
+add_executable(check_copy_move check_copy_move.cpp)
+target_link_libraries(check_copy_move OptionalArgument::OptionalArgument)
+
+add_executable(named_assert_example named_assert_example.cpp)
+target_link_libraries(named_assert_example OptionalArgument::OptionalArgument)
