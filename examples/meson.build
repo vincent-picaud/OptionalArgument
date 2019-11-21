@@ -21,3 +21,7 @@ executable('check_copy_move',
 executable('named_assert_example',
 	   'named_assert_example.cpp',
 	   dependencies : [OptionalArgument_dep])
+
+executable('named_std_function_example',
+	   'named_std_function_example.cpp',
+	   dependencies : [OptionalArgument_dep])

@@ -4,6 +4,7 @@
 //
 #pragma once
 
+#include <functional>
 #include <iostream>
 #include <optional>
 #include <tuple>
@@ -306,5 +307,60 @@ namespace OptionalArgument
 
     return out;
   }
+
+  //////////////// Named_Std_Function ////////////////
+  //
+  // Specialization for extended capture
+  //
+  template <typename TAG, typename OUTPUT, typename... ARGS>
+  class Named_Std_Function;
+
+  template <typename TAG, typename OUTPUT, typename... ARGS>
+  struct Argument_Syntactic_Sugar<Named_Std_Function<TAG, OUTPUT, ARGS...>,
+                                  typename Named_Std_Function<TAG, OUTPUT, ARGS...>::value_type>
+  {
+    template <typename _F>
+    Named_Std_Function<TAG, OUTPUT, ARGS...>
+    operator=(_F&& f) const
+    {
+      return {std::forward<_F>(f)};
+    }
+
+    Named_Std_Function<TAG, OUTPUT, ARGS...> operator=(OUTPUT(f)(ARGS...)) const { return {f}; }
+
+    constexpr Argument_Syntactic_Sugar()                      = default;
+    Argument_Syntactic_Sugar(Argument_Syntactic_Sugar const&) = delete;
+    Argument_Syntactic_Sugar(Argument_Syntactic_Sugar&&)      = delete;
+    Argument_Syntactic_Sugar& operator=(Argument_Syntactic_Sugar const&) = delete;
+    Argument_Syntactic_Sugar& operator=(Argument_Syntactic_Sugar&&) = delete;
+  };
+
+  template <typename TAG, typename OUTPUT, typename... ARGS>
+  class Named_Std_Function
+  {
+   public:
+    using value_type = std::function<OUTPUT(ARGS...)>;
+
+   protected:
+    value_type _f;
+
+   public:
+    Named_Std_Function() = default;
+
+    template <typename _F>
+    Named_Std_Function(_F&& f) : _f(std::forward<_F>(f))
+    {
+    }
+
+    bool
+    is_empty() const
+    {
+      return _f == false;
+    }
+    OUTPUT
+    operator()(ARGS... args) const { return _f(args...); }
+
+    using argument_syntactic_sugar = Argument_Syntactic_Sugar<Named_Std_Function>;
+  };
 
 }  // namespace OptionalArgument

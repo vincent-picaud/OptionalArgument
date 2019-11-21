@@ -227,3 +227,63 @@ TEST(Optional_Argument, Named_Assert)
 
   ASSERT_THROW(my_algorithm(absolute_precision = -1e-6), std::string);
 }
+
+//////////////// Named_Std_Function ////////////////
+//
+
+using Objective_Function =
+    Named_Std_Function<struct Objective_Function_Tag, double, const std::vector<double>&>;
+constexpr auto objective_function = Argument_Syntactic_Sugar<Objective_Function>();
+
+double
+my_algorithm(const Objective_Function& obj_f, std::vector<double>& x_init)
+{
+  return obj_f(x_init);
+}
+
+double
+Rosenbrock(const std::vector<double>& x, double c)
+{
+  assert(x.size() == 2);
+
+  return (1 - x[0]) * (1 - x[0]) + c * (x[1] - x[0] * x[0]) * (x[1] - x[0] * x[0]);
+}
+
+double
+Rosenbrock(const std::vector<double>& x)
+{
+  return Rosenbrock(x, 10);
+}
+
+template <typename T>
+struct Rosenbrock_as_Struct
+{
+  double c = 200;
+
+  T
+  operator()(const std::vector<T>& x) const
+  {
+    assert(x.size() == 2);
+
+    return (1 - x[0]) * (1 - x[0]) + c * (x[1] - x[0] * x[0]) * (x[1] - x[0] * x[0]);
+  }
+};
+
+TEST(Optional_Argument, Named_Std_Function)
+{
+  std::vector<double> x(2, -1);
+
+  ASSERT_EQ(my_algorithm(my_algorithm(objective_function = Rosenbrock, x)), 44);
+
+  auto lambda = [](const std::vector<double>& x) { return Rosenbrock(x, 100); };
+  ASSERT_EQ(my_algorithm(objective_function = lambda, x), 404);
+
+  const auto r = my_algorithm(
+      objective_function = [](const std::vector<double>& x) { return Rosenbrock(x, 100); }, x);
+  ASSERT_EQ(r, 404);
+
+  ASSERT_EQ(my_algorithm(objective_function = Rosenbrock_as_Struct<double>(), x), 804);
+
+  Rosenbrock_as_Struct<double> f;
+  ASSERT_EQ(my_algorithm(objective_function = f, x), 804);
+}

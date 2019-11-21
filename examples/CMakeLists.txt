@@ -12,3 +12,6 @@ target_link_libraries(check_copy_move OptionalArgument::OptionalArgument)
 
 add_executable(named_assert_example named_assert_example.cpp)
 target_link_libraries(named_assert_example OptionalArgument::OptionalArgument)
+
+add_executable(named_std_function_example named_std_function_example.cpp)
+target_link_libraries(named_std_function_example OptionalArgument::OptionalArgument)
