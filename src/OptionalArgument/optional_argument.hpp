@@ -207,17 +207,12 @@ namespace OptionalArgument
     value_type _value;
 
    public:
-    constexpr Named_Type()                  = default;
-    constexpr Named_Type(const Named_Type&) = default;
-    constexpr Named_Type(Named_Type&&)      = default;
+    constexpr Named_Type() = default;
 
     template <typename _T>
     constexpr Named_Type(_T&& value) : _value(std::forward<_T>(value))
     {
     }
-
-    constexpr Named_Type& operator=(const Named_Type& other) = default;
-    constexpr Named_Type& operator=(Named_Type&& other) = default;
 
     constexpr const value_type&
     value() const
