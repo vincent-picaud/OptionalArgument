@@ -198,3 +198,32 @@ TEST(Optional_Argument, foo_flag)
   bool b_2 = foo_flag(1., flag);
   ASSERT_EQ(b_2, true);
 }
+
+//////////////// Named_Assert ////////////////
+//
+template <typename T>
+struct Assert_Positive
+{
+  void
+  operator()(const T& t) const
+  {
+    if (t <= 0) throw std::string("not positive");
+  }
+};
+
+using Absolute_Precision =
+    Named_Assert_Type<struct Absolute_Precision_Tag, Assert_Positive<double>, double>;
+constexpr auto absolute_precision = typename Absolute_Precision::argument_syntactic_sugar();
+
+double
+my_algorithm(const Absolute_Precision& absolute_precision)
+{
+  return absolute_precision.value();
+}
+
+TEST(Optional_Argument, Named_Assert)
+{
+  ASSERT_EQ(my_algorithm(absolute_precision = 1e-6), 1e-6);
+
+  ASSERT_THROW(my_algorithm(absolute_precision = -1e-6), std::string);
+}
