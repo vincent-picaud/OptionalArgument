@@ -171,7 +171,7 @@ namespace OptionalArgument
   // inspired by
   // https://github.com/joboccara/NamedType/blob/master/named_type_impl.hpp
   //
-  template <typename OBJ, typename VALUE>
+  template <typename OBJ, typename VALUE = typename OBJ::value_type>
   struct Argument_Syntactic_Sugar
   {
     constexpr OBJ
@@ -200,8 +200,11 @@ namespace OptionalArgument
     // need here.
     static_assert(not std::is_reference_v<T>);
 
+   public:
+    using value_type = T;
+
    protected:
-    T _value;
+    value_type _value;
 
    public:
     constexpr Named_Type()                  = default;
@@ -216,19 +219,19 @@ namespace OptionalArgument
     constexpr Named_Type& operator=(const Named_Type& other) = default;
     constexpr Named_Type& operator=(Named_Type&& other) = default;
 
-    constexpr const T&
+    constexpr const value_type&
     value() const
     {
       return _value;
     }
 
-    constexpr T&
+    constexpr value_type&
     value()
     {
       return _value;
     }
 
-    using argument_syntactic_sugar = Argument_Syntactic_Sugar<Named_Type<TAG, T>, T>;
+    using argument_syntactic_sugar = Argument_Syntactic_Sugar<Named_Type>;
   };
 
   template <typename TAG, typename T>
