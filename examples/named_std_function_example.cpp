@@ -49,6 +49,15 @@ main()
   std::valarray<double> x(2);
   x = -1;
 
+  static_assert(
+      std::is_invocable_r_v<double, Rosenbrock_as_Struct<double>, const std::valarray<double>&>);
+
+  // Note that, as there are two Rosenbrock() functions,
+  //
+  // std::function<double(const std::valarray<double>&)> test = Rosenbrock; fails
+  //
+  // We do not fails because we provide OUT(f)(ARGS...) entries
+  //
   my_algorithm(objective_function = Rosenbrock, x);
 
   my_algorithm(

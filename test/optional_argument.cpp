@@ -269,6 +269,13 @@ struct Rosenbrock_as_Struct
   }
 };
 
+TEST(Optional_Argument, Empty_Named_Std_Function)
+{
+  Objective_Function empty_f;
+
+  ASSERT_TRUE(empty_f.is_empty());
+}
+
 TEST(Optional_Argument, Named_Std_Function)
 {
   std::vector<double> x(2, -1);
@@ -286,4 +293,23 @@ TEST(Optional_Argument, Named_Std_Function)
 
   Rosenbrock_as_Struct<double> f;
   ASSERT_EQ(my_algorithm(objective_function = f, x), 804);
+}
+
+TEST(Optional_Argument, Lambda_to_Named_Std_Function)
+{
+  using Adam_Alpha_Schedule =
+      Named_Std_Function<struct Adam_Alpha_Schedule_Tag, double, const size_t>;
+  static constexpr auto Adam_alpha_schedule =
+      typename Adam_Alpha_Schedule::argument_syntactic_sugar();
+  static constexpr auto Adam_alpha_constant_schedule = [](const double alpha) {
+    auto to_return = [alpha](const size_t) -> double { return alpha; };
+    return to_return;
+  };
+
+  Adam_Alpha_Schedule alpha_schedule = (Adam_alpha_schedule = Adam_alpha_constant_schedule(0.01));
+
+  ASSERT_EQ(alpha_schedule(10), 0.01);
+  ASSERT_EQ(alpha_schedule(20), 0.01);
+
+  Adam_Alpha_Schedule alpha_schedule_2 = Adam_alpha_constant_schedule(0.02);
 }

@@ -188,9 +188,9 @@ namespace OptionalArgument
     }
 
     constexpr Argument_Syntactic_Sugar()                      = default;
-    Argument_Syntactic_Sugar(Argument_Syntactic_Sugar const&) = delete;
+    Argument_Syntactic_Sugar(const Argument_Syntactic_Sugar&) = delete;
     Argument_Syntactic_Sugar(Argument_Syntactic_Sugar&&)      = delete;
-    Argument_Syntactic_Sugar& operator=(Argument_Syntactic_Sugar const&) = delete;
+    Argument_Syntactic_Sugar& operator=(const Argument_Syntactic_Sugar&) = delete;
     Argument_Syntactic_Sugar& operator=(Argument_Syntactic_Sugar&&) = delete;
   };
 
@@ -319,19 +319,19 @@ namespace OptionalArgument
   struct Argument_Syntactic_Sugar<Named_Std_Function<TAG, OUTPUT, ARGS...>,
                                   typename Named_Std_Function<TAG, OUTPUT, ARGS...>::value_type>
   {
+    Named_Std_Function<TAG, OUTPUT, ARGS...> operator=(OUTPUT(f)(ARGS...)) const { return {f}; }
     template <typename _F>
-    Named_Std_Function<TAG, OUTPUT, ARGS...>
+    std::enable_if_t<std::is_invocable_r_v<OUTPUT, std::decay_t<_F>, ARGS...>,
+                     Named_Std_Function<TAG, OUTPUT, ARGS...>>
     operator=(_F&& f) const
     {
-      return {std::forward<_F>(f)};
+      return {f};
     }
 
-    Named_Std_Function<TAG, OUTPUT, ARGS...> operator=(OUTPUT(f)(ARGS...)) const { return {f}; }
-
     constexpr Argument_Syntactic_Sugar()                      = default;
-    Argument_Syntactic_Sugar(Argument_Syntactic_Sugar const&) = delete;
+    Argument_Syntactic_Sugar(const Argument_Syntactic_Sugar&) = delete;
     Argument_Syntactic_Sugar(Argument_Syntactic_Sugar&&)      = delete;
-    Argument_Syntactic_Sugar& operator=(Argument_Syntactic_Sugar const&) = delete;
+    Argument_Syntactic_Sugar& operator=(const Argument_Syntactic_Sugar&) = delete;
     Argument_Syntactic_Sugar& operator=(Argument_Syntactic_Sugar&&) = delete;
   };
 
@@ -347,13 +347,15 @@ namespace OptionalArgument
    public:
     Named_Std_Function() = default;
 
-    Named_Std_Function(value_type&& f) : _f(std::move(f)) {}
-    Named_Std_Function(const value_type& f) : _f(f) {}
+    template <typename _F, typename = std::enable_if_t<std::is_invocable_r_v<OUTPUT, _F, ARGS...>>>
+    Named_Std_Function(_F&& f) : _f{std::forward<_F>(f)}
+    {
+    }
 
     bool
     is_empty() const
     {
-      return _f == false;
+      return static_cast<bool>(_f) == false;
     }
     OUTPUT
     operator()(ARGS... args) const { return _f(args...); }
