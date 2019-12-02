@@ -182,7 +182,7 @@ template <typename... OPTIONS>
 bool
 foo_flag(const double, OPTIONS&&... options)
 {
-  Flag flag = false;
+  Flag flag{false};
 
   auto opt_arg = take_optional_argument_ref(flag);
   optional_argument(opt_arg, std::forward<OPTIONS>(options)...);
@@ -280,7 +280,7 @@ TEST(Optional_Argument, Named_Std_Function)
 {
   std::vector<double> x(2, -1);
 
-  ASSERT_EQ(my_algorithm(my_algorithm(objective_function = Rosenbrock, x)), 44);
+  ASSERT_EQ(my_algorithm(objective_function = Rosenbrock, x), 44);
 
   auto lambda = [](const std::vector<double>& x) { return Rosenbrock(x, 100); };
   ASSERT_EQ(my_algorithm(objective_function = lambda, x), 404);
@@ -311,5 +311,5 @@ TEST(Optional_Argument, Lambda_to_Named_Std_Function)
   ASSERT_EQ(alpha_schedule(10), 0.01);
   ASSERT_EQ(alpha_schedule(20), 0.01);
 
-  Adam_Alpha_Schedule alpha_schedule_2 = Adam_alpha_constant_schedule(0.02);
+  Adam_Alpha_Schedule alpha_schedule_2{Adam_alpha_constant_schedule(0.02)};
 }

@@ -48,9 +48,9 @@ template <typename T, typename... USER_OPTIONS>
 void
 optimization_algorithm(std::vector<T>& x, USER_OPTIONS&&... user_options)
 {
-  Max_Iterations max_iterations         = 100;
-  Absolute_Precision absolute_precision = 1e-10;
-  Relative_Precision relative_precision = 1e-10;
+  Max_Iterations max_iterations{100};
+  Absolute_Precision absolute_precision{1e-10};
+  Relative_Precision relative_precision{1e-10};
   std::optional<Lower_Bounds<T>> lower_bound;
   std::optional<Upper_Bounds<T>> upper_bound;
 

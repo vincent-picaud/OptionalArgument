@@ -2,6 +2,8 @@
 #+PROPERTY: header-args:cpp :wrap example :results output :nomain :flags "-std=c++17 -Wall -I/home/picaud/GitHub/OptionalArgument/src/"
 
 * News
+** Mon 02 Dec 2019
+Cancel any possible implicit conversion by making constructors =explicit=.
 ** Thu 21 Nov 2019 
 Added =Named_Assert_Type= type. See =named_assert_example.cpp= section.
 ** Fri 01 Nov 2019
@@ -33,8 +35,8 @@ argument support is relatively light:
 template <typename T, typename... USER_OPTIONS>
 void algorithm(std::vector<T>& x, const USER_OPTIONS&... user_options)
 {
-  Absolute_Precision absolute_precision = 1e-10;
-  Max_Iterations max_iterations = 500;
+  Absolute_Precision absolute_precision{1e-10};
+  Max_Iterations max_iterations{500};
   std::optional<Allows_Restart> allows_restart;
 
   auto options = take_optional_argument_ref(absolute_precision, max_iterations, allows_restart);
@@ -85,8 +87,8 @@ using namespace OptionalArgument;
 template <typename... Ts>
 void example(Ts... user_options)
 {
-  int maximum_iterations = 50;
-  double absolute_precision = 1e-5;
+  int maximum_iterations{50};
+  double absolute_precision{1e-5};
   std::optional<bool> allows_restart;
 
   auto options = take_optional_argument_ref(maximum_iterations, absolute_precision, allows_restart);
@@ -144,8 +146,8 @@ using namespace OptionalArgument;
 template <typename... Ts>
 void example(Ts... user_options)
 {
-  size_t maximum_iterations = 50;   // <- size_t instead of int
-  float absolute_precision = 1e-5;  // <- float instead of double
+  size_t maximum_iterations{50};   // <- size_t instead of int
+  float absolute_precision{1e-5};  // <- float instead of double
 
   auto options = take_optional_argument_ref(maximum_iterations, absolute_precision);
   optional_argument(options, user_options...);
@@ -197,8 +199,8 @@ constexpr auto maximum_iterations = typename Maximum_Iterations::argument_syntac
 template <typename... Ts>
 void example(Ts... user_options)
 {
-  Maximum_Iterations maximum_iterations = 50;
-  Absolute_Precision absolute_precision = 1e-5;
+  Maximum_Iterations maximum_iterations{50};
+  Absolute_Precision absolute_precision{1e-5};
 
   auto options = take_optional_argument_ref(maximum_iterations, absolute_precision);
   optional_argument(options, user_options...);
@@ -216,10 +218,10 @@ int main()
 #+end_src
 
 #+RESULTS:
-#+BEGIN_example
+#+begin_example
 Option values: 10 1e-05 
 Option values: 50 1e-06
-#+END_example
+#+end_example
 
 ** Without =Named_Type=
 
@@ -298,30 +300,30 @@ main()
 #+END_SRC
 
 #+RESULTS:
-#+BEGIN_example
--0.416368
--1.50344
-2.58518
--0.144277
--0.251208
-2.42255
--0.0763728
--0.536604
--0.263128
-0.702065
+#+begin_example
+1.45544
+-0.642569
+0.377425
+0.276248
+1.48404
+0.938607
+0.575446
+-1.49081
+1.50139
+0.142015
 
--1.26893
-0.398224
-0.640818
-1.14303
--1.19008
+-0.664602
+-0.184922
+-0.415816
+1.09387
+-0.0196457
 
-0.595222
-0.515426
-2.18843
-1.18475
-1.61471
-#+END_example
+0.348479
+1.76989
+0.558797
+0.835355
+1.31337
+#+end_example
 
 * More examples
 

@@ -178,13 +178,13 @@ namespace OptionalArgument
     constexpr OBJ
     operator=(const VALUE& value) const
     {
-      return {value};
+      return OBJ{value};
     }
 
     constexpr OBJ
     operator=(VALUE&& value) const
     {
-      return {std::move(value)};
+      return OBJ{std::move(value)};
     }
 
     constexpr Argument_Syntactic_Sugar()                      = default;
@@ -211,8 +211,21 @@ namespace OptionalArgument
     constexpr Named_Type() = default;
 
     template <typename _T>
-    constexpr Named_Type(_T&& value) : _value(std::forward<_T>(value))
+    explicit constexpr Named_Type(_T&& value) : _value(std::forward<_T>(value))
     {
+    }
+
+    constexpr Named_Type&
+    operator=(value_type&& value)
+    {
+      _value = std::move(value);
+      return *this;
+    }
+    constexpr Named_Type&
+    operator=(const value_type& value)
+    {
+      _value = value;
+      return *this;
     }
 
     constexpr const value_type&
@@ -279,9 +292,25 @@ namespace OptionalArgument
     constexpr Named_Assert_Type() = default;
 
     template <typename _T>
-    constexpr Named_Assert_Type(_T&& value) : _value(std::forward<_T>(value))
+    explicit constexpr Named_Assert_Type(_T&& value) : _value(std::forward<_T>(value))
     {
       ASSERT()(_value);
+    }
+
+    constexpr Named_Assert_Type&
+    operator=(const value_type& value)
+    {
+      _value = value;
+      ASSERT()(_value);
+      return *this;
+    }
+
+    constexpr Named_Assert_Type&
+    operator=(value_type&& value)
+    {
+      _value = std::move(value);
+      ASSERT()(_value);
+      return *this;
     }
 
     constexpr const value_type&
@@ -319,13 +348,16 @@ namespace OptionalArgument
   struct Argument_Syntactic_Sugar<Named_Std_Function<TAG, OUTPUT, ARGS...>,
                                   typename Named_Std_Function<TAG, OUTPUT, ARGS...>::value_type>
   {
-    Named_Std_Function<TAG, OUTPUT, ARGS...> operator=(OUTPUT(f)(ARGS...)) const { return {f}; }
+    Named_Std_Function<TAG, OUTPUT, ARGS...> operator=(OUTPUT(f)(ARGS...)) const
+    {
+      return Named_Std_Function<TAG, OUTPUT, ARGS...>{f};
+    }
     template <typename _F>
     std::enable_if_t<std::is_invocable_r_v<OUTPUT, std::decay_t<_F>, ARGS...>,
                      Named_Std_Function<TAG, OUTPUT, ARGS...>>
     operator=(_F&& f) const
     {
-      return {f};
+      return Named_Std_Function<TAG, OUTPUT, ARGS...>{f};
     }
 
     constexpr Argument_Syntactic_Sugar()                      = default;
@@ -348,10 +380,18 @@ namespace OptionalArgument
     Named_Std_Function() = default;
 
     template <typename _F, typename = std::enable_if_t<std::is_invocable_r_v<OUTPUT, _F, ARGS...>>>
-    Named_Std_Function(_F&& f) : _f{std::forward<_F>(f)}
+    explicit Named_Std_Function(_F&& f) : _f{std::forward<_F>(f)}
     {
     }
 
+    template <typename _F,
+              typename = std::enable_if_t<std::is_invocable_r_v<OUTPUT, std::decay_t<_F>, ARGS...>>>
+    Named_Std_Function&
+    operator=(_F&& f)
+    {
+      _f = std::forward<_F>(f);
+      return *this;
+    }
     bool
     is_empty() const
     {
