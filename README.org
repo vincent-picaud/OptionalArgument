@@ -2,9 +2,9 @@
 #+PROPERTY: header-args:cpp :wrap example :results output :nomain :flags "-std=c++17 -Wall -I/home/picaud/GitHub/OptionalArgument/src/"
 
 * News
-** Mon 02 Dec 2019
+** Mon 02 Dec 2019 [0.0.2 tag]
 Cancel any possible implicit conversion by making constructors =explicit=.
-** Thu 21 Nov 2019 
+** Thu 21 Nov 2019 [0.0.1 tag]
 Added =Named_Assert_Type= type. See =named_assert_example.cpp= section.
 ** Fri 01 Nov 2019
 Added CMake constructor 
