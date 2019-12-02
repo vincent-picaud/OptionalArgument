@@ -14,7 +14,13 @@ CMakeFiles/**
 /Makefile
 /OptionalArgumentConfig.cmake
 /OptionalArgumentConfigVersion.cmake
-examples/CMakeFiles/**
-examples/CTestTestfile.cmake
-examples/Makefile
-examples/cmake_install.cmake
+/examples/CMakeFiles/**
+/examples/CTestTestfile.cmake
+/examples/Makefile
+/examples/cmake_install.cmake
+/examples/struct_example
+/examples/plot_usage_example
+/examples/algorithm_usage_example
+/examples/check_copy_move
+/examples/named_assert_example
+/examples/named_std_function_example
